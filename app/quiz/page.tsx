@@ -19,78 +19,100 @@ export default function QuizPage() {
   const [confidence, setConfidence] = useState<Confidence>(null);
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
+  const [lastSeq, setLastSeq] = useState<number | null>(null);
+  const [hasMore, setHasMore] = useState(true);
 
   // データ取得
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const res = await apiFetch('/questions');
-        const data = await res.json();
-
-        // data が配列であることを確認。もしオブジェクトの中にリストがある場合は適宜修正
-        const questionsArray = Array.isArray(data) ? data : (data.content || []);
-
-        const formatted = questionsArray;
-        setQuestions(formatted);
-      } catch (e) {
-        console.error("Fetch error:", e);
+  
+  const fetchQuestions = async (cursor?: number) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get("mode");
+      let url;
+      // 初回かつ cursor がない場合、まず resume を試す
+      if(mode === "resume" && !cursor) {
+        url = `/questions/resume?userId=${userId}&limit=20`;
+      } else {
+      // クエリパラメータなどで「復習モード」判定があれば URL を切り替え
+      // const url = isMistakeMode ? `/questions/mistakes?userId=${userId}` : ...
+        const page = cursor ?? 0;
+        url = `/questions?language=Java&page=${page}&size=20`;
       }
-    };
+  
+      const res = await apiFetch(url);
+      console.log("レスポンス", res);
+      const data = await res.json();
+  
+      if (!data.questions || data.questions.length === 0) {
+        setHasMore(false);
+        return;
+      }
+  
+      setQuestions(prev => [...prev, ...data.questions]);
+      setLastSeq(data.nextCursor); 
+      setHasMore(data.hasMore);
+    } catch (e) {
+      console.error("Fetch error:", e);
+    }
+  };
+
+  useEffect(() => {
     fetchQuestions();
   }, []);
 
   // 解答データをDBに保存するロジック
   const handleSubmit = async() => {
     const userId = localStorage.getItem("userId");
-    if(!userId) {
-      alert("ログインが必要です");
-      router.push("/login");
-      return;
-    }
+    const selectedOption = q.options.sort((a, b) => a.optionOrder - b.optionOrder)[selected!];
+    
+    // 自信度の数値をマッピング
+    const confidenceValue = confidence;
 
-    const selectedOption = q.options
-    .sort((a, b) => a.optionOrder - b.optionOrder)[selected!];
-
-    const isCorrect = selectedOption?.isCorrect ?? false;
-
-    const confidenceMap: Record<string, number> = {
-      sure: 1,
-      guess: 2
+    const payload = {
+      userId: userId,
+      questionId: q.questionId,
+      selectedOptionId: selectedOption.optionId,
+      confidence: confidenceValue
     };
-    if (!confidence) {
-      alert("自信度を選択してください");
-      return;
-    }
+
+    console.log("[Submit] 送信ペイロード:", payload);
 
     try {
-      await apiFetch("/questions/history", {
+      const res = await apiFetch("/answers", {
         method: "POST",
-        body: JSON.stringify({
-          userId: userId,
-          questionId: q.id,
-          isCorrect: isCorrect,
-          confidence: confidence
-        }),
+        body: JSON.stringify(payload),
       });
-      console.log("リクエスト", userId, q.id, isCorrect, confidence);
-      setSubmitted(true);
+
+      console.log("[Submit] レスポンスステータス:", res.status);
+
+      if (res.ok) {
+        // もしバックエンドが結果を返しているならログに出す
+        const result = await res.json().catch(() => ({ message: "No JSON body" }));
+        console.log("[Submit] サーバーからの返却値:", result);
+        setSubmitted(true);
+      } else {
+        console.error("[Submit] 保存失敗:", res.status);
+      }
     } catch(err) {
-      console.error("保存失敗:", err);
-    alert("データの保存に失敗しました");
+      console.error("[Submit] 通信エラー:", err);
     }
   };
 
   // 【機能1】次の問題へ進むロジック
   const handleNext = () => {
-    if (qIndex < questions.length - 1) {
+    // 残り5問になったら次を取得
+    if(hasMore && questions.length - qIndex <= 5) {
+      fetchQuestions(lastSeq!);
+    }
+
+    if(qIndex < questions.length - 1) {
       setQIndex((prev) => prev + 1);
-      // 状態リセット（仕組み化：次の問題への初期化）
       setSelected(null);
       setConfidence(null);
       setSubmitted(false);
       setTimeLeft(60);
     } else {
-      // 全問終了
       alert("全問題が終了しました！ホームに戻ります。");
       router.push("/");
       router.refresh();
@@ -114,7 +136,22 @@ export default function QuizPage() {
             <DifficultyBadge level={q.difficultyLevel} />
             <h1 className="text-xl font-bold text-slate-200">{q.title}</h1>
           </div>
-          <Timer seconds={timeLeft} total={60} />
+          
+          <div className="flex items-center gap-4">
+            <Timer seconds={timeLeft} total={60} />
+            
+            {/* 中断ボタンを追加 */}
+            <button 
+              onClick={() => {
+                if (confirm("学習を中断してホームに戻りますか？")) {
+                  router.push("/");
+                }
+              }}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-bold text-slate-400 hover:text-rose-400 transition-all"
+            >
+              一時中断
+            </button>
+          </div>
         </div>
 
         {/* 問題・コード部分は変更なし */}
@@ -131,12 +168,12 @@ export default function QuizPage() {
           .sort((a, b) => a.optionOrder - b.optionOrder)
           .map((opt, idx) => (
             <OptionButton
-              key={opt.id}
+              key={opt.optionId}
               text={opt.optionText}
               index={idx}
               selected={selected === idx}
               submitted={submitted}
-              isCorrect={opt.isCorrect}
+              isCorrect={opt.correct}
               onClick={() => setSelected(idx)}
             />
           ))}

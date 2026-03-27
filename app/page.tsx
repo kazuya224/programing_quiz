@@ -35,6 +35,7 @@ export default function HomePage() {
         if(res.ok) {
           const data = await res.json();
           setStatsData(data);
+          console.log("統計レスポンス:", data)
         }
       } catch(err) {
         console.error("統計データの取得に失敗:", err);
@@ -85,6 +86,11 @@ export default function HomePage() {
             <Link href="/quiz" className="group p-8 bg-indigo-600 hover:bg-indigo-500 rounded-2xl transition-all shadow-xl shadow-indigo-500/20">
               <h3 className="text-2xl font-bold mb-2">ランダムトレーニング</h3>
               <p className="text-indigo-100 opacity-80">全ジャンルからランダムに出題。実力を試すならここから。</p>
+            </Link>
+
+            <Link href="/quiz?mode=resume" className="group p-8 bg-amber-600 hover:bg-amber-500 rounded-2xl transition-all shadow-xl shadow-amber-500/20">
+              <h3 className="text-2xl font-bold mb-2">続きから再開</h3>
+              <p className="text-amber-100 opacity-80">前回中断した場所から学習を再開します。</p>
             </Link>
             
             <Link href="/history" className="group p-8 bg-slate-800 border border-slate-700 hover:border-indigo-500 rounded-2xl transition-all">

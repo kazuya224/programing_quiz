@@ -6,7 +6,8 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock({ code, language }: CodeBlockProps) {
-  const lines = code.trim().split("\n");
+  const safeCode = code ?? "";
+  const lines = safeCode.trim().split("\n");
 
   const tokenize = (line: string) => {
     // 簡易トークナイザー（以前のロジックを反映）

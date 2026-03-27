@@ -20,6 +20,7 @@ export default function LoginPage() {
             if(!res.ok) {
                 throw new Error("ユーザー名またはパスワードが正しくありません");
             }
+            console.log("リクエスト", userName,password);
             console.log("レスポンス", res);
             const user = await res.json();
             localStorage.setItem("userId", user.userId);
