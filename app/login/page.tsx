@@ -13,7 +13,7 @@ export default function LoginPage() {
         e.preventDefault();
         setError("");
         try {
-            const res = await apiFetch("/auth/login", {
+            const res = await apiFetch("/api/auth/login", {
                 method: "POST",
                 body: JSON.stringify({userName, password}),
             });

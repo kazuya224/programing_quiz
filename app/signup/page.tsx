@@ -14,7 +14,7 @@ export default function SignupPage() {
         setError("");
 
         try {
-            const res = await apiFetch("/auth/signup", {
+            const res = await apiFetch("/api/auth/signup", {
                 method: "POST",
                 body: JSON.stringify({ userName, password }),
             });

@@ -31,7 +31,7 @@ export default function HomePage() {
 
     const fetchStats = async() => {
       try {
-        const res = await apiFetch(`/questions/stats/${userId}`);
+        const res = await apiFetch(`/api/questions/stats/${userId}`);
         if(res.ok) {
           const data = await res.json();
           setStatsData(data);
