@@ -9,5 +9,6 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
             ...options.headers,
         },
     });
+    console.log("API_BASE_URL:", API_BASE_URL);
     return res;
 };
