@@ -79,7 +79,7 @@ export default function QuizPage() {
     console.log("[Submit] 送信ペイロード:", payload);
 
     try {
-      const res = await apiFetch("/answers", {
+      const res = await apiFetch("/api/answers", {
         method: "POST",
         body: JSON.stringify(payload),
       });
