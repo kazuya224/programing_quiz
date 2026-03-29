@@ -11,6 +11,7 @@ interface UserStats {
   correctAnswers: number;
   accuracyRate: number;
   masteredCount: number;
+  hasResume: boolean;
 }
 
 export default function HomePage() {
@@ -88,10 +89,12 @@ export default function HomePage() {
               <p className="text-indigo-100 opacity-80">全ジャンルからランダムに出題。実力を試すならここから。</p>
             </Link>
 
-            <Link href="/quiz?mode=resume" className="group p-8 bg-amber-600 hover:bg-amber-500 rounded-2xl transition-all shadow-xl shadow-amber-500/20">
-              <h3 className="text-2xl font-bold mb-2">続きから再開</h3>
-              <p className="text-amber-100 opacity-80">前回中断した場所から学習を再開します。</p>
-            </Link>
+            {statsData?.hasResume && (
+              <Link href="/quiz?mode=resume" className="group p-8 bg-amber-600 hover:bg-amber-500 rounded-2xl transition-all shadow-xl shadow-amber-500/20">
+                <h3 className="text-2xl font-bold mb-2">続きから再開</h3>
+                <p className="text-amber-100 opacity-80">前回中断した場所から学習を再開します。</p>
+              </Link>
+            )}
             
             <Link href="/history" className="group p-8 bg-slate-800 border border-slate-700 hover:border-indigo-500 rounded-2xl transition-all">
               <h3 className="text-2xl font-bold mb-2 text-indigo-400">解答履歴</h3>
