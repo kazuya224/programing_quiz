@@ -17,6 +17,10 @@ export default function LoginPage() {
                 method: "POST",
                 body: JSON.stringify({userName, password}),
             });
+          //   const res = await apiFetch("/auth/login", {
+          //     method: "POST",
+          //     body: JSON.stringify({userName, password}),
+          // });
             if(!res.ok) {
                 throw new Error("ユーザー名またはパスワードが正しくありません");
             }

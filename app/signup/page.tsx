@@ -18,6 +18,10 @@ export default function SignupPage() {
                 method: "POST",
                 body: JSON.stringify({ userName, password }),
             });
+          //   const res = await apiFetch("/auth/signup", {
+          //     method: "POST",
+          //     body: JSON.stringify({ userName, password }),
+          // });
             if(!res.ok) {
                 const message = await res.text();
                 throw new Error(message || "登録に失敗しました");

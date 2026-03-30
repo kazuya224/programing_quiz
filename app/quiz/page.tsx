@@ -33,11 +33,13 @@ export default function QuizPage() {
       // 初回かつ cursor がない場合、まず resume を試す
       if(mode === "resume" && !cursor) {
         url = `/api/questions/resume?userId=${userId}&limit=20`;
+        // url = `/questions/resume?userId=${userId}&limit=20`;
       } else {
       // クエリパラメータなどで「復習モード」判定があれば URL を切り替え
       // const url = isMistakeMode ? `/questions/mistakes?userId=${userId}` : ...
         const page = cursor ?? 0;
         url = `/api/questions?language=Java&page=${page}&size=20`;
+        // url = `/questions?language=Java&page=${page}&size=20`;
       }
   
       const res = await apiFetch(url);
@@ -83,6 +85,10 @@ export default function QuizPage() {
         method: "POST",
         body: JSON.stringify(payload),
       });
+      // const res = await apiFetch("/answers", {
+      //   method: "POST",
+      //   body: JSON.stringify(payload),
+      // });
 
       console.log("[Submit] レスポンスステータス:", res.status);
 
