@@ -1,73 +1,65 @@
-"use client"
+"use client";
 
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect } from "react";
+import Script from "next/script";
 
 export default function LoginPage() {
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const router = useRouter();
-    const handleLogin = async(e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        try {
-            const res = await apiFetch("/api/auth/login", {
-                method: "POST",
-                body: JSON.stringify({userName, password}),
-            });
-          //   const res = await apiFetch("/auth/login", {
-          //     method: "POST",
-          //     body: JSON.stringify({userName, password}),
-          // });
-            if(!res.ok) {
-                throw new Error("ユーザー名またはパスワードが正しくありません");
-            }
-            console.log("リクエスト", userName,password);
-            console.log("レスポンス", res);
-            const user = await res.json();
-            localStorage.setItem("userId", user.userId);
-            localStorage.setItem("userName", user.userName);
-            router.push("/")
-        } catch (err: any) {
-            setError(err.message);
-        }
-    };
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-          <form onSubmit={handleLogin} className="p-8 bg-white shadow-md rounded-lg w-96">
-            <h1 className="text-2xl font-bold mb-6 text-center">ログイン</h1>
-            
-            {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
-    
-            <input
-              type="text"
-              placeholder="ユーザー名"
-              className="w-full p-2 mb-4 border rounded"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="パスワード"
-              className="w-full p-2 mb-6 border rounded"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button
-              type="submit"
-              className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 font-bold"
-            >
-              ログイン
-            </button>
-            <p className="mt-4 text-sm text-center">
-              アカウントをお持ちでない方は
-              <a href="/signup" className="text-blue-600 ml-1 underline">こちら</a>
-            </p>
-          </form>
+  const router = useRouter();
+
+  const handleCredentialResponse = async (response: any) => {
+    try {
+      const res = await apiFetch("/auth/google", {
+        method: "POST",
+        body: JSON.stringify({
+          token: response.credential,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Googleログイン失敗");
+      }
+
+      const data = await res.json();
+      localStorage.setItem("userId", data.userId);
+
+      if (data.isNewUser) {
+        router.push("/register-username");
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const initializeGoogle = () => {
+    window.google?.accounts.id.initialize({
+      client_id: "450998180907-r7r2loc02s1gghfmf76tgtc0lnkdpcog.apps.googleusercontent.com",
+      callback: handleCredentialResponse,
+    });
+
+    window.google?.accounts.id.renderButton(
+      document.getElementById("googleButton"),
+      { theme: "outline", size: "large" }
+    );
+  };
+
+  return (
+    <>
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"  // ← ここを変更
+        onLoad={initializeGoogle}     // ← onLoadで確実に初期化
+      />
+
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="p-8 bg-white shadow-md rounded-lg w-96 text-center">
+          <h1 className="text-2xl font-bold mb-6">ログイン</h1>
+          <div id="googleButton"></div>
         </div>
-      );
+      </div>
+    </>
+  );
 }
