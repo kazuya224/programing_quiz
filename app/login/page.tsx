@@ -10,18 +10,18 @@ export default function LoginPage() {
 
   const handleCredentialResponse = async (response: any) => {
     try {
-      // const res = await apiFetch("/api/auth/google", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     token: response.credential,
-      //   }),
-      // });
-      const res = await apiFetch("/auth/google", {
+      const res = await apiFetch("/api/auth/google", {
         method: "POST",
         body: JSON.stringify({
           token: response.credential,
         }),
       });
+      // const res = await apiFetch("/auth/google", {
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     token: response.credential,
+      //   }),
+      // });
 
       if (!res.ok) {
         throw new Error("Googleログイン失敗");
