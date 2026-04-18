@@ -19,8 +19,8 @@ export default function HistoryPage() {
           return;
         }
       try {
-        const res = await apiFetch (`/answers/history/${localStorage.getItem("userId")}`);
-        // const res = await apiFetch (`/api/answers/history/${localStorage.getItem("userId")}`);
+        // const res = await apiFetch (`/answers/history/${localStorage.getItem("userId")}`);
+        const res = await apiFetch (`/api/answers/history/${localStorage.getItem("userId")}`);
         if(!res.ok) {
           throw new Error(`サーバーエラー: ${res.status}`);
         }

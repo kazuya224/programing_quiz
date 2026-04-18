@@ -40,15 +40,18 @@ export default function QuizPage() {
   
       if (mode === "review") {
         // バックエンド: @RequestParam UUID userId, String language, int page, int size
-        url = `/questions/mistakes?userId=${userId}&language=${language}&page=${page}&size=${size}`;
+        // url = `/questions/mistakes?userId=${userId}&language=${language}&page=${page}&size=${size}`;
+        url = `/api/questions/mistakes?userId=${userId}&language=${language}&page=${page}&size=${size}`;
       } else if (mode === "resume") {
         // バックエンド: @RequestParam UUID userId, int limit
-        url = `/questions/resume?userId=${userId}&language=${language}&page=${page}&limit=${size}`;
+        // url = `/questions/resume?userId=${userId}&language=${language}&page=${page}&limit=${size}`;
+        url = `/api/questions/resume?userId=${userId}&language=${language}&page=${page}&limit=${size}`;
       } else {
         // 通常時
         const genre = params.get("genre");
         const genreParam = genre ? `&genre=${genre}` : "";
-        url = `/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
+        // url = `/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
+        url = `/api/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
       }
   
       console.log("Request URL:", url);
@@ -99,14 +102,14 @@ export default function QuizPage() {
 
     try {
       if(selected === null) return;
-      // const res = await apiFetch("/api/answers", {
-      //   method: "POST",
-      //   body: JSON.stringify(payload),
-      // });
-      const res = await apiFetch("/answers", {
+      const res = await apiFetch("/api/answers", {
         method: "POST",
         body: JSON.stringify(payload),
       });
+      // const res = await apiFetch("/answers", {
+      //   method: "POST",
+      //   body: JSON.stringify(payload),
+      // });
 
       console.log("[Submit] レスポンスステータス:", res.status);
 

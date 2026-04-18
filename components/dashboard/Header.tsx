@@ -34,7 +34,11 @@ export default function Header({ userName, streak }: Props) {
     setIsSaving(true);
     try {
       const userId = localStorage.getItem("userId");
-      const res = await apiFetch(`/auth/${userId}/username`, {
+      // const res = await apiFetch(`/auth/${userId}/username`, {
+      //   method: "PATCH",
+      //   body: JSON.stringify({ userName: trimmed }),
+      // });
+      const res = await apiFetch(`/api/auth/${userId}/username`, {
         method: "PATCH",
         body: JSON.stringify({ userName: trimmed }),
       });
