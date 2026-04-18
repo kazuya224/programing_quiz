@@ -96,7 +96,7 @@ export default function Header({ userName, streak }: Props) {
       <div className="flex items-center gap-3 bg-slate-800 px-5 py-3 rounded-2xl">
         <Icons.Flame />
         <div>
-          <p className="text-xs text-slate-400">Streak</p>
+          <p className="text-xs text-slate-400">連続学習日数</p>
           <p className="text-xl font-bold">{streak} Days</p>
         </div>
       </div>

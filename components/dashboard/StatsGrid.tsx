@@ -31,18 +31,18 @@ export default function StatsGrid({
   return (
     <div className="grid md:grid-cols-3 gap-4">
       <div className="bg-slate-800 p-6 rounded-2xl">
-        <p className="text-sm text-slate-400">Today's</p>
+        <p className="text-sm text-slate-400">今日の学習数</p>
         <p className="text-3xl">{todayCount}</p>
       </div>
 
       <div className="bg-slate-800 p-6 rounded-2xl">
-        <p className="text-sm text-slate-400">Weekly</p>
+        <p className="text-sm text-slate-400">今週の学習数</p>
         <p className="text-3xl">{weeklyTotal}</p>
         {renderDiff(totalDiff)}
       </div>
 
       <div className="bg-slate-800 p-6 rounded-2xl">
-        <p className="text-sm text-slate-400">Accuracy</p>
+        <p className="text-sm text-slate-400">正答率</p>
         <p className="text-3xl">{accuracy}%</p>
         {renderDiff(accuracyDiff)}
       </div>

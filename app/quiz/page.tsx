@@ -29,20 +29,37 @@ export default function QuizPage() {
       const userId = localStorage.getItem("userId");
       const params = new URLSearchParams(window.location.search);
       const mode = params.get("mode");
-      let url;
-      // 初回かつ cursor がない場合、まず resume を試す
-      if(mode === "resume" && !cursor) {
-        url = `/api/questions/resume?userId=${userId}&limit=20`;
-        // url = `/questions/resume?userId=${userId}&limit=20`;
+      const language = params.get("language");
+      
+      if (!userId || !language) return;
+  
+      let url = "";
+      // 現在のページ番号（cursorがなければ0）
+      const page = cursor ?? 0;
+      const size = 20;
+  
+      if (mode === "review") {
+        // バックエンド: @RequestParam UUID userId, String language, int page, int size
+        url = `/questions/mistakes?userId=${userId}&language=${language}&page=${page}&size=${size}`;
+      } else if (mode === "resume") {
+        // バックエンド: @RequestParam UUID userId, int limit
+        url = `/questions/resume?userId=${userId}&language=${language}&page=${page}&limit=${size}`;
       } else {
-      // クエリパラメータなどで「復習モード」判定があれば URL を切り替え
-      // const url = isMistakeMode ? `/questions/mistakes?userId=${userId}` : ...
-        const page = cursor ?? 0;
-        url = `/api/questions?language=Java&page=${page}&size=20`;
-        // url = `/questions?language=Java&page=${page}&size=20`;
+        // 通常時
+        const genre = params.get("genre");
+        const genreParam = genre ? `&genre=${genre}` : "";
+        url = `/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
       }
   
+      console.log("Request URL:", url);
       const res = await apiFetch(url);
+      
+      if (res.status === 400) {
+        const errorDetail = await res.json();
+        console.error("400 Error Details:", errorDetail);
+        return;
+      }
+      console.log("URL:", url);
       console.log("レスポンス", res);
       const data = await res.json();
   
@@ -81,14 +98,15 @@ export default function QuizPage() {
     console.log("[Submit] 送信ペイロード:", payload);
 
     try {
-      const res = await apiFetch("/api/answers", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-      // const res = await apiFetch("/answers", {
+      if(selected === null) return;
+      // const res = await apiFetch("/api/answers", {
       //   method: "POST",
       //   body: JSON.stringify(payload),
       // });
+      const res = await apiFetch("/answers", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
 
       console.log("[Submit] レスポンスステータス:", res.status);
 

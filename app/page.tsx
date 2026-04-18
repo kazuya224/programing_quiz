@@ -18,24 +18,31 @@ export default function HomePage() {
   const [statsData, setStatsData] = useState<UserStats | null>(null);
   const [userName, setUserName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [genreData, setGenreData] = useState<Record<string, Genre[]>>({});
+  const [genreData, setGenreData] = useState<Record<string, Genre[]> | null>(null);
   const router = useRouter();
+  const availableLanguages = Object.keys(genreData || {});
 
-  const fetchStats = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-      router.push("/login");
-      return;
-    }
+  // HomePage.tsx の fetchStats 関数内
+const fetchStats = async () => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    router.push("/login");
+    return;
+  }
 
+  try {
     const res = await apiFetch(`/questions/stats/${userId}`);
     const data = await res.json();
+    
+    // バックエンドの Map<String, List<GenreDto>> は data.genres に入っているはず
+    if (data.genres) {
+      setGenreData(data.genres);
+    }
     setStatsData(data.stats);
-    setGenreData(data.genres); 
+  } finally {
     setIsLoading(false);
-    console.log("スタッツレスポンス", data.stats);
-    console.log("ジャンルレスポンス", data.genres);
-  };
+  }
+};
 
   useEffect(() => {
     setUserName(localStorage.getItem("userName") || "Engineer");
@@ -58,9 +65,9 @@ export default function HomePage() {
         totalDiff={statsData?.diff.totalDiff ?? 0}
         accuracyDiff={statsData?.diff.accuracyDiff ?? 0}
       />
-      <GenreAccordionList data={genreData} />
+      {<GenreAccordionList data={genreData || {}} />}
 
-      <MainMenu hasResume={statsData?.hasResume ?? false} />
+      <MainMenu hasResume={statsData?.hasResume ?? false} availableLanguages={availableLanguages} />
 
       <Footer />
     </div>
