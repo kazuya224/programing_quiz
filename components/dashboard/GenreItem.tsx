@@ -8,10 +8,10 @@ type Props = {
 
 export function GenreItem({ language, genre }: Props) {
   const percent =
-    genre.accuracy !== null ? Math.round(genre.accuracy * 100) : null;
+   genre.totalCount > 0 ? Math.round(genre.correctCount / genre.totalCount * 100) : null;
 
   // 間違えた問題がある場合のみ、ボタンを有効化または目立たせることができます
-  const hasMistakes = genre.totalCount - genre.correctCount > 0;
+  const hasMistakes = genre.totalCount - genre.correctCount > 0 || genre.correctCount == 0 || genre.totalCount == 0;
 
   return (
     <div className="py-3 border-b border-slate-700/50 last:border-0">

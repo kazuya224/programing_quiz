@@ -31,8 +31,8 @@ const fetchStats = async () => {
   }
 
   try {
-    // const res = await apiFetch(`/questions/stats/${userId}`);
-    const res = await apiFetch(`/api/questions/stats/${userId}`);
+    const res = await apiFetch(`/questions/stats/${userId}`);
+    // const res = await apiFetch(`/api/questions/stats/${userId}`);
     const data = await res.json();
     
     // バックエンドの Map<String, List<GenreDto>> は data.genres に入っているはず
