@@ -27,9 +27,6 @@ export default function HistoryPage() {
         const data = await res.json();
         setLogs(Array.isArray(data) ? data : []);
         
-        console.log("userId", localStorage.getItem("userId"));
-        console.log("レスポンス", res);
-        console.log("logs", logs);
       } catch(err) {
         console.error("データ取得失敗");
         setLogs([]);
