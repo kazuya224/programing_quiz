@@ -12,7 +12,6 @@ type Props = {
   
     const toggle = (e: React.MouseEvent) => {
       e.preventDefault(); // 予期せぬ動作を防止
-      console.log("Toggle clicked for:", language); // これがコンソールに出るか確認
       setOpen(!open);
     };
 

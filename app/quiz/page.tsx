@@ -54,7 +54,6 @@ export default function QuizPage() {
         // url = `/api/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
       }
   
-      console.log("Request URL:", url);
       const res = await apiFetch(url);
       
       if (res.status === 400) {
@@ -62,8 +61,7 @@ export default function QuizPage() {
         console.error("400 Error Details:", errorDetail);
         return;
       }
-      console.log("URL:", url);
-      console.log("レスポンス", res);
+      
       const data = await res.json();
   
       if (!data.questions || data.questions.length === 0) {
@@ -98,7 +96,6 @@ export default function QuizPage() {
       confidence: confidenceValue
     };
 
-    console.log("[Submit] 送信ペイロード:", payload);
 
     try {
       if(selected === null) return;
@@ -111,12 +108,10 @@ export default function QuizPage() {
         body: JSON.stringify(payload),
       });
 
-      console.log("[Submit] レスポンスステータス:", res.status);
 
       if (res.ok) {
         // もしバックエンドが結果を返しているならログに出す
         const result = await res.json().catch(() => ({ message: "No JSON body" }));
-        console.log("[Submit] サーバーからの返却値:", result);
         setSubmitted(true);
       } else {
         console.error("[Submit] 保存失敗:", res.status);
