@@ -23,30 +23,52 @@ export default function HomePage() {
   const availableLanguages = Object.keys(genreData || {});
 
   // HomePage.tsx の fetchStats 関数内
-const fetchStats = async () => {
-  const userId = localStorage.getItem("userId");
-  if (!userId) {
-    router.push("/login");
-    return;
-  }
+  const fetchStats = async () => {
+    const token = localStorage.getItem("token");
 
-  try {
-    const res = await apiFetch(`/questions/stats/${userId}`);
-    // const res = await apiFetch(`/api/questions/stats/${userId}`);
-    const data = await res.json();
-    
-    // バックエンドの Map<String, List<GenreDto>> は data.genres に入っているはず
-    if (data.genres) {
-      setGenreData(data.genres);
+    if (!token) {
+      router.push("/login");
+      return;
     }
-    setStatsData(data.stats);
-  } finally {
-    setIsLoading(false);
-  }
-};
+
+    try {
+      const res = await apiFetch(`/questions/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });    // const res = await apiFetch(`/api/questions/stats/${userId}`);
+      const data = await res.json();
+
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        router.push("/login");
+      }
+      
+      // バックエンドの Map<String, List<GenreDto>> は data.genres に入っているはず
+      if (data.genres) {
+        setGenreData(data.genres);
+      }
+      setStatsData(data.stats);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchMe = async () => {
+    const token = localStorage.getItem("token");
+
+    const res = await apiFetch("/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const user = await res.json();
+    setUserName(user.userName || "Engineer");
+  };
 
   useEffect(() => {
-    setUserName(localStorage.getItem("userName") || "Engineer");
+    fetchMe();
     fetchStats();
   }, []);
 

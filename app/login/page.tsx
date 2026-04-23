@@ -2,36 +2,29 @@
 
 import { apiFetch } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import Script from "next/script";
 
 export default function LoginPage() {
   const router = useRouter();
 
   const handleCredentialResponse = async (response: any) => {
+    console.log("🔥 callback来た", response);
     try {
-      // const res = await apiFetch("/api/auth/google", {
-      //   method: "POST",
-      //   body: JSON.stringify({
-      //     token: response.credential,
-      //   }),
-      // });
       const res = await apiFetch("/auth/google", {
         method: "POST",
         body: JSON.stringify({
           token: response.credential,
         }),
       });
-
-      if (!res.ok) {
-        throw new Error("Googleログイン失敗");
-      }
-
+      
+      
       const data = await res.json();
-      localStorage.setItem("userId", data.userId);
-
-      if (data.isNewUser) {
-        router.push("/register-username");
+      
+      localStorage.setItem("token", data.token);
+      
+      // 🔥 ここ修正
+      if (data.newUser) {
+        router.push("/");
       } else {
         router.push("/");
       }
@@ -56,8 +49,8 @@ export default function LoginPage() {
     <>
       <Script
         src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"  // ← ここを変更
-        onLoad={initializeGoogle}     // ← onLoadで確実に初期化
+        strategy="afterInteractive"
+        onLoad={initializeGoogle}
       />
 
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
