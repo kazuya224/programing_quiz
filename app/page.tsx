@@ -37,6 +37,7 @@ export default function HomePage() {
           Authorization: `Bearer ${token}`,
         },
       });    // const res = await apiFetch(`/api/questions/stats/${userId}`);
+      
       const data = await res.json();
 
       if (res.status === 401) {
@@ -56,6 +57,7 @@ export default function HomePage() {
 
   const fetchMe = async () => {
     const token = localStorage.getItem("token");
+    console.log("meAPI");
 
     const res = await apiFetch("/auth/me", {
       headers: {
