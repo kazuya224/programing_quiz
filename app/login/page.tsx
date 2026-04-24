@@ -19,6 +19,8 @@ export default function LoginPage() {
       
       
       const data = await res.json();
+      const token = response.credential;
+      console.log("トークン", token);
       
       localStorage.setItem("token", data.token);
       
