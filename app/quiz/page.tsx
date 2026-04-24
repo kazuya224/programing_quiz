@@ -21,57 +21,66 @@ export default function QuizPage() {
   const [timeLeft, setTimeLeft] = useState(60);
   const [lastSeq, setLastSeq] = useState<number | null>(null);
   const [hasMore, setHasMore] = useState(true);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
+const [explanation, setExplanation] = useState<string>("");
 
   // データ取得
   
   const fetchQuestions = async (cursor?: number) => {
     try {
-      const userId = localStorage.getItem("userId");
       const params = new URLSearchParams(window.location.search);
       const mode = params.get("mode");
       const language = params.get("language");
-      
-      if (!userId || !language) return;
   
-      let url = "";
-      // 現在のページ番号（cursorがなければ0）
-      const page = cursor ?? 0;
+      if (!language) return;
+  
       const size = 20;
   
+      let url = "";
+  
       if (mode === "review") {
-        // バックエンド: @RequestParam UUID userId, String language, int page, int size
-        url = `/questions/mistakes?userId=${userId}&language=${language}&page=${page}&size=${size}`;
-        // url = `/api/questions/mistakes?userId=${userId}&language=${language}&page=${page}&size=${size}`;
+        url = `/questions/mistakes?language=${language}&size=${size}`;
       } else if (mode === "resume") {
-        // バックエンド: @RequestParam UUID userId, int limit
-        url = `/questions/resume?userId=${userId}&language=${language}&page=${page}&limit=${size}`;
-        // url = `/api/questions/resume?userId=${userId}&language=${language}&page=${page}&limit=${size}`;
+        url = `/questions/resume?language=${language}&size=${size}`;
       } else {
-        // 通常時
         const genre = params.get("genre");
         const genreParam = genre ? `&genre=${genre}` : "";
-        url = `/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
-        // url = `/api/questions?language=${language}${genreParam}&page=${page}&size=${size}`;
+        url = `/questions?language=${language}${genreParam}&size=${size}`;
+      }
+  
+      // 👇 ここが今回のポイント（cursor追加）
+      if (cursor) {
+        url += `&cursor=${cursor}`;
       }
   
       const res = await apiFetch(url);
-      
-      if (res.status === 400) {
-        const errorDetail = await res.json();
-        console.error("400 Error Details:", errorDetail);
+  
+      if (!res.ok) {
+        const err = await res.text();
+        console.error(err);
         return;
       }
-      
+  
       const data = await res.json();
+      console.log(`[Response] Received ${data.questions?.length ?? 0} questions.`);
   
       if (!data.questions || data.questions.length === 0) {
         setHasMore(false);
         return;
       }
   
-      setQuestions(prev => [...prev, ...data.questions]);
-      setLastSeq(data.nextCursor); 
+      if (cursor) {
+        // 追加読み込み（「次の問題へ」など）の時は、既存のリストに足す
+        setQuestions(prev => [...prev, ...data.questions]);
+      } else {
+        // 初回読み込み（useEffectから呼ばれた時）は、既存を無視して上書きする
+        // これにより2回実行されても、2件の結果で上書きされるだけなので2件のまま保持される
+        setQuestions(data.questions);
+      }
+      setLastSeq(data.nextCursor);
       setHasMore(data.hasMore);
+  
     } catch (e) {
       console.error("Fetch error:", e);
     }
@@ -82,42 +91,40 @@ export default function QuizPage() {
   }, []);
 
   // 解答データをDBに保存するロジック
-  const handleSubmit = async() => {
-    const userId = localStorage.getItem("userId");
-    const selectedOption = q.options.sort((a, b) => a.optionOrder - b.optionOrder)[selected!];
-    
-    // 自信度の数値をマッピング
-    const confidenceValue = confidence;
-
+  const handleSubmit = async () => {
+    if (selected === null) return;
+  
+    const selectedOption = q.options
+      .sort((a, b) => a.optionOrder - b.optionOrder)[selected];
+  
     const payload = {
-      userId: userId,
       questionId: q.questionId,
       selectedOptionId: selectedOption.optionId,
-      confidence: confidenceValue
+      confidence: confidence
     };
-
-
+  
     try {
-      if(selected === null) return;
-      // const res = await apiFetch("/api/answers", {
-      //   method: "POST",
-      //   body: JSON.stringify(payload),
-      // });
       const res = await apiFetch("/answers", {
         method: "POST",
         body: JSON.stringify(payload),
       });
-
-
-      if (res.ok) {
-        // もしバックエンドが結果を返しているならログに出す
-        const result = await res.json().catch(() => ({ message: "No JSON body" }));
-        setSubmitted(true);
-      } else {
-        console.error("[Submit] 保存失敗:", res.status);
+  
+      if (!res.ok) {
+        console.error("保存失敗");
+        return;
       }
-    } catch(err) {
-      console.error("[Submit] 通信エラー:", err);
+  
+      const result = await res.json();
+  
+      // 👇 ここが超重要
+      setIsCorrect(result.correct);
+      setCorrectOptionId(result.correctOptionId);
+      setExplanation(result.explanation);
+  
+      setSubmitted(true);
+  
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -195,7 +202,7 @@ export default function QuizPage() {
               index={idx}
               selected={selected === idx}
               submitted={submitted}
-              isCorrect={opt.correct}
+              isCorrect={correctOptionId === opt.optionId}
               onClick={() => setSelected(idx)}
             />
           ))}
@@ -225,7 +232,7 @@ export default function QuizPage() {
                   <span className="text-lg">💡</span>
                   <h3 className="font-bold uppercase tracking-wider text-sm">Explanation</h3>
                 </div>
-                <p className="text-slate-300 leading-relaxed">{q.explanation}</p>
+                <p className="text-slate-300 leading-relaxed">{explanation}</p>
               </div>
               <button 
                 onClick={handleNext}

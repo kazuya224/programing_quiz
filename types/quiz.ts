@@ -1,6 +1,6 @@
 // types/question.ts
 export type Option = {
-    optionId: string
+    optionId: number
     optionText: string
     optionOrder: number
     correct: boolean
