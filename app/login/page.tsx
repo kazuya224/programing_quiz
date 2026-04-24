@@ -9,6 +9,8 @@ export default function LoginPage() {
 
   const handleCredentialResponse = async (response: any) => {
     console.log("🔥 callback来た", response);
+    const token = response.credential;
+    console.log("トークン", token);
     try {
       const res = await apiFetch("/auth/google", {
         method: "POST",
@@ -16,11 +18,12 @@ export default function LoginPage() {
           token: response.credential,
         }),
       });
-      
+      if (!res.ok) {
+        console.error("❌ 401エラー", res.status);
+        return;
+      }
       
       const data = await res.json();
-      const token = response.credential;
-      console.log("トークン", token);
       
       localStorage.setItem("token", data.token);
       
