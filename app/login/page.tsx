@@ -24,6 +24,7 @@ export default function LoginPage() {
       }
       
       const data = await res.json();
+      console.log("バックエンドJWT", data.token);
       
       localStorage.setItem("token", data.token);
       
