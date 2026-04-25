@@ -8,7 +8,10 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
         ...(options.headers as Record<string, string>),
     };
 
-    if (token && token !== "undefined") {
+    // ✅ 公開エンドポイントはAuthorizationヘッダーを付けない
+    const isPublic = path.includes("/auth/google") || path.includes("/auth/login");
+
+    if (token && token !== "undefined" && !isPublic) {
         headers["Authorization"] = `Bearer ${token}`;
     }
 
@@ -17,7 +20,6 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
         headers,
     });
 
-    // 🔥 追加：401の場合はログインページにリダイレクト
     if (res.status === 401) {
         if (typeof window !== "undefined") {
             window.location.href = "/login";

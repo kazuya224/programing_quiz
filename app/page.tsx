@@ -25,6 +25,7 @@ export default function HomePage() {
   // HomePage.tsx の fetchStats 関数内
   const fetchStats = async () => {
     const token = localStorage.getItem("token");
+    console.log("トークン", localStorage.getItem("token"));
 
     if (!token) {
       router.push("/login");
