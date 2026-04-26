@@ -30,7 +30,7 @@ const [explanation, setExplanation] = useState<string>("");
   const fetchQuestions = async (cursor?: number) => {
     try {
       const params = new URLSearchParams(window.location.search);
-      const mode = params.get("mode");
+      const mode = params.get("mode") || "learning";
       const language = params.get("language");
   
       if (!language) return;
@@ -96,11 +96,17 @@ const [explanation, setExplanation] = useState<string>("");
   
     const selectedOption = q.options
       .sort((a, b) => a.optionOrder - b.optionOrder)[selected];
+
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get("mode") || "learning";
+      const language = params.get("language");
   
     const payload = {
       questionId: q.questionId,
       selectedOptionId: selectedOption.optionId,
-      confidence: confidence
+      confidence: confidence,
+      mode: mode,
+      language: language
     };
   
     try {
@@ -186,9 +192,14 @@ const [explanation, setExplanation] = useState<string>("");
         {/* 問題・コード部分は変更なし */}
         <section className="space-y-4">
           <p className="text-lg leading-relaxed text-slate-300">{q.questionText}</p>
-          <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl">
-            <CodeBlock code={q.codeSnippet} language={q.language} />
-          </div>
+          {q.codeSnippet && q.codeSnippet.trim() !== "" && (
+            <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl">
+              <CodeBlock 
+                code={q.codeSnippet.replace(/\\n/g, "\n")} 
+                language={q.language} 
+              />
+            </div>
+          )}
         </section>
 
         {/* Options */}
