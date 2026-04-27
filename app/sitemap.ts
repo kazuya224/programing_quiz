@@ -5,7 +5,11 @@ export default function sitemap() {
             lastModified: new Date(),
         },
         {
-            url: 'https://programing-quiz-zeta.vercel.app/login',
+            url: 'https://programing-quiz-zeta.vercel.app/questions',
+            lastModified: new Date(),
+        },
+        {
+            url: 'https://programing-quiz-zeta.vercel.app/questions/{id}',
             lastModified: new Date(),
         },
     ];
