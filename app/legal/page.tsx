@@ -11,7 +11,7 @@ export default function LegalPage() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
           <tbody>
           <Row label="販売事業者名" value="プログラミング問題演習サービス" />
-          <Row label="運営統括責任者" value="請求があった場合には速やかに開示いたします" />
+          <Row label="運営統括責任者" value="小川加寿也" />
           <Row label="所在地" value="東京都（詳細は請求があった場合には速やかに開示いたします）" />
           <Row label="電話番号" value="請求があった場合には速やかに開示いたします" />
           <Row label="メールアドレス" value="kazuswbwc@gmail.com" />
