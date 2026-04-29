@@ -1,8 +1,10 @@
+// app/home
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
+import { useSubscription } from "@/hooks/useSubscription";
 
 import {
   Header,
@@ -21,11 +23,11 @@ export default function HomePage() {
   const [genreData, setGenreData] = useState<Record<string, Genre[]> | null>(null);
   const router = useRouter();
   const availableLanguages = Object.keys(genreData || {});
+  const { isPremium, subscription, checkout } = useSubscription();
 
   // HomePage.tsx の fetchStats 関数内
   const fetchStats = async () => {
     const token = localStorage.getItem("token");
-    console.log("トークン", localStorage.getItem("token"));
 
     if (!token) {
       router.push("/login");
@@ -58,7 +60,6 @@ export default function HomePage() {
 
   const fetchMe = async () => {
     const token = localStorage.getItem("token");
-    console.log("meAPI");
 
     const res = await apiFetch("/auth/me", {
       headers: {
@@ -91,6 +92,26 @@ export default function HomePage() {
         totalDiff={statsData?.diff.totalDiff ?? 0}
         accuracyDiff={statsData?.diff.accuracyDiff ?? 0}
       />
+
+      {!isPremium && (
+        <div className="bg-yellow-400 text-black p-4 rounded">
+          <p className="font-bold">プレミアムで全問題解放</p>
+          <p className="text-sm">月額770円(税込み)・復習機能・全ジャンル対応</p>
+
+          <button
+            onClick={checkout}
+            className="mt-3 bg-black text-white px-4 py-2 rounded"
+          >
+            プレミアムになる
+          </button>
+        </div>
+      )}
+      {subscription?.cancelAtPeriodEnd && (
+        <div className="bg-gray-600 p-3 rounded">
+          次回更新で解約されます（それまではプレミアム利用可能）
+        </div>
+      )}
+
       {<GenreAccordionList data={genreData || {}} />}
 
       <MainMenu hasResume={statsData?.hasResume ?? false} availableLanguages={availableLanguages} />

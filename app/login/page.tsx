@@ -1,3 +1,4 @@
+// app/login
 "use client";
 
 import { apiFetch } from "@/lib/api";
@@ -10,7 +11,6 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleCredentialResponse = useCallback(async (response: any) => {
-    console.log("🔥 callback来た", response);
     try {
       const res = await apiFetch("/auth/google", {
         method: "POST",
@@ -24,7 +24,7 @@ export default function LoginPage() {
 
       const data = await res.json();
       localStorage.setItem("token", data.token);
-      router.push("/");
+      router.push("/home");
     } catch (err) {
       console.error(err);
     }

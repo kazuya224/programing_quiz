@@ -63,7 +63,6 @@ const [explanation, setExplanation] = useState<string>("");
       }
   
       const data = await res.json();
-      console.log(`[Response] Received ${data.questions?.length ?? 0} questions.`);
   
       if (!data.questions || data.questions.length === 0) {
         setHasMore(false);
