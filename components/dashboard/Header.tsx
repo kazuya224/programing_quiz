@@ -68,7 +68,7 @@ const res = await apiFetch(`/auth/username`, {
     <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-800 pb-8">
       <div>
         <h1 className="text-4xl font-black text-white">
-          ENGINEERING <span className="text-indigo-500">MASTERY</span>
+          Dev <span className="text-indigo-500">Train</span>
         </h1>
         <p className="text-slate-400 mt-2 flex items-center gap-1">
           おかえりなさい、

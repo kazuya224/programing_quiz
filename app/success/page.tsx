@@ -23,6 +23,6 @@ return () => clearTimeout(timer);
 
 }, []);
 
-return ( <div className="flex flex-col items-center justify-center min-h-screen text-white"> <h1 className="text-2xl font-bold">決済が完了しました 🎉</h1> <p className="mt-2">5秒後にホームへ戻ります...</p> </div>
+return ( <div className="flex flex-col items-center justify-center min-h-screen text-gray-900"> <h1 className="text-2xl font-bold">決済が完了しました 🎉</h1> <p className="mt-2">5秒後にホームへ戻ります...</p> </div>
 );
 }

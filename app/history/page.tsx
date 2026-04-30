@@ -47,7 +47,7 @@ export default function HistoryPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex justify-between items-end">
           <h1 className="text-3xl font-bold">学習履歴</h1>
-          <Link href="/" className="text-sm text-slate-400 hover:text-white">
+          <Link href="/home" className="text-sm text-slate-400 hover:text-white">
             ホームに戻る
           </Link>
         </div>

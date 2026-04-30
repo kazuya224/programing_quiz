@@ -148,7 +148,7 @@ const [explanation, setExplanation] = useState<string>("");
       setTimeLeft(60);
     } else {
       alert("全問題が終了しました！ホームに戻ります。");
-      router.push("/");
+      router.push("/home");
       router.refresh();
     }
   };
@@ -178,7 +178,7 @@ const [explanation, setExplanation] = useState<string>("");
             <button 
               onClick={() => {
                 if (confirm("学習を中断してホームに戻りますか？")) {
-                  router.push("/");
+                  router.push("/home");
                 }
               }}
               className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs font-bold text-slate-400 hover:text-rose-400 transition-all"
