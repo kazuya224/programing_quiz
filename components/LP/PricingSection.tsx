@@ -5,7 +5,7 @@ import { useInView } from "./useInView";
 import { CTAButton } from "./CTAButton";
 
 const VALUE_POINTS = [
-  { icon: "🏫", label: "プログラミングスクール", price: "30〜80万円", note: "数ヶ月の受講費", highlight: false },
+  { icon: "🏫", label: "プログラミングスクール", price: "30〜1000万円", note: "数ヶ月の受講費", highlight: false },
   { icon: "📘", label: "技術書・教材",           price: "3,000〜15,000円", note: "1冊ごとに購入", highlight: false },
   { icon: "🎓", label: "DevTrain",               price: "¥770 / 月",      note: "税込・解約自由", highlight: true },
 ];
@@ -14,14 +14,14 @@ const FEATURES = [
   "1,500問以上の現場ベース問題",
   "全問丁寧な解説付き",
   "弱点を自動ピックアップする復習機能",
-  "分野別の正答率グラフ",
+  "分野別の正答率比較",
   "いつでも解約可能",
 ];
 
 const PAYMENT_ROWS = [
-  { label: "課金タイミング", value: "登録時に課金。以後毎月同日に自動更新" },
-  { label: "支払い方法",     value: "クレジットカード（Stripe 決済）" },
-  { label: "解約",           value: "いつでも可能。次回更新日まで利用可" },
+  { label: "課金タイミング", value: "無料トライアル７日間終了時に課金。以後毎月同日に自動更新" },
+  { label: "支払い方法",     value: "クレジットカード" },
+  { label: "解約",           value: "7日以内の解約は完全無料。以後は次回更新日まで利用可" },
 ];
 
 export function PricingSection() {

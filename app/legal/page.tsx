@@ -11,7 +11,7 @@ export default function LegalPage() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
           <tbody>
           <Row label="販売事業者名" value="プログラミング問題演習サービス" />
-          <Row label="運営統括責任者" value="小川加寿也" />
+          <Row label="運営統括責任者" value="詳細は請求があった場合には速やかに開示いたします" />
           <Row label="所在地" value="東京都（詳細は請求があった場合には速やかに開示いたします）" />
           <Row label="電話番号" value="請求があった場合には速やかに開示いたします" />
           <Row label="メールアドレス" value="kazuswbwc@gmail.com" />
@@ -19,9 +19,9 @@ export default function LegalPage() {
           <Row label="販売価格" value="月額770円（税込）" />
           <Row label="料金以外の必要費用" value="インターネット接続料金はお客様のご負担となります" />
           <Row label="支払い方法" value="クレジットカード（Visa / Mastercard / American Express）" />
-          <Row label="支払い時期・課金タイミング" value="ご登録時に課金され、その後毎月同日に自動更新されます" />
+          <Row label="支払い時期・課金タイミング" value="無料トライアル７日間終了時に課金。以後毎月同日に自動更新" />
           <Row label="サービス提供時期" value="決済完了後、即時ご利用いただけます" />
-          <Row label="解約・キャンセルについて" value="いつでもマイページから解約可能です。解約後は次回更新日まで引き続きご利用いただけます" />
+          <Row label="解約・キャンセルについて" value="いつでもホーム画面から解約可能です。解約後は次回更新日まで引き続きご利用いただけます" />
           <Row label="返金ポリシー" value="サービスの性質上、原則として返金は承っておりません。ただし、システム障害等により利用不能な期間が生じた場合は、個別に対応いたします" />
           <Row label="動作環境" value="最新版の Chrome / Firefox / Safari / Edge を推奨します" />
           </tbody>

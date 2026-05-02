@@ -191,7 +191,10 @@ const [explanation, setExplanation] = useState<string>("");
         {/* 問題・コード部分は変更なし */}
         <section className="space-y-4">
           <p className="text-lg leading-relaxed text-slate-300">{q.questionText}</p>
-          {q.codeSnippet && q.codeSnippet.trim() !== "" && (
+          {q.codeSnippet &&
+          q.codeSnippet.trim() !== "" &&
+          !q.codeSnippet.includes("// なし") &&
+          !q.codeSnippet.includes("// コードなし") && (
             <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl">
               <CodeBlock 
                 code={q.codeSnippet.replace(/\\n/g, "\n")} 

@@ -5,15 +5,15 @@ import { useInView } from "./useInView";
 import { useMediaQuery, BP } from "./useMediaQuery";
 
 const BEFORE = [
-  { icon: "🌀", text: "何をやるべきか、わからない" },
-  { icon: "😰", text: "コードを見ても手が動かない" },
-  { icon: "😶", text: "実力がないという自信のなさ" },
+  { icon: "🌀", text: "コードは読めるが、何が問題なのか判断できない" },
+  { icon: "😰", text: "バグの原因が分からず、調べてもピンとこない" },
+  { icon: "😶", text: "設計の良し悪しが分からず、とりあえず書いてしまう" },
 ];
 
 const AFTER = [
-  { icon: "🚀", text: "自走できる。迷わずコードを書ける" },
-  { icon: "🏆", text: "実務レベルの基礎が身についている" },
-  { icon: "💡", text: "自分のスキルに自信がある" },
+  { icon: "🚀", text: "コードを見て、問題点や改善点を判断できる" },
+  { icon: "🏆", text: "バグの原因を選択肢から論理的に特定できる" },
+  { icon: "💡", text: "設計の良し悪しを比較して判断できる" },
 ];
 
 function StateCard({

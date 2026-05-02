@@ -48,7 +48,7 @@ export function Hero() {
         fontWeight: 900, lineHeight: 1.2, color: C.text,
         margin: "0 0 20px", letterSpacing: "-0.03em",
       }}>
-        現場レベルの問題で、<br />
+        実務レベルの問題で、<br />
         <span style={{ color: C.accent }}>本物のスキル</span>を身につける。
       </h1>
 

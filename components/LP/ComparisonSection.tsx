@@ -31,11 +31,11 @@ const RATING_LABEL: Record<Rating, string> = {
 const COLS = ["DevTrain", "動画学習系", "技術書・教材", "スクール"];
 
 const ROWS: CompRow[] = [
-  { label: "実務レベルの問題", devtrain: "◎", service1: "△", service2: "○", school: "○" },
+  { label: "実務レベルの問題", devtrain: "◎", service1: "△", service2: "◎", school: "○" },
   { label: "アウトプット量",   devtrain: "◎", service1: "×", service2: "△", school: "○" },
-  { label: "学習効率",         devtrain: "◎", service1: "△", service2: "△", school: "○" },
-  { label: "解説の丁寧さ",     devtrain: "◎", service1: "○", service2: "○", school: "◎" },
-  { label: "価格",             devtrain: "◎", service1: "○", service2: "○", school: "×" },
+  { label: "学習効率",         devtrain: "◎", service1: "○", service2: "△", school: "○" },
+  { label: "解説の丁寧さ",     devtrain: "◎", service1: "◎", service2: "◎", school: "◎" },
+  { label: "価格",             devtrain: "◎", service1: "◎", service2: "△", school: "×" },
 ];
 
 // モバイル用カード形式の比較
