@@ -54,7 +54,9 @@ const [explanation, setExplanation] = useState<string>("");
         url += `&cursor=${cursor}`;
       }
   
-      const res = await apiFetch(url);
+      const res = await apiFetch(url, {
+        credentials: "include"
+      });
   
       if (!res.ok) {
         const err = await res.text();

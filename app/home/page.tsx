@@ -56,9 +56,9 @@ export default function HomePage() {
       const res = await apiFetch(`/questions/stats`, {
       });
       const data = await res.json();
-      if (res.status === 401) {
-        router.push("/login");
-      }
+      // if (res.status === 401) {
+      //   router.push("/login");
+      // }
       if (data.genres) setGenreData(data.genres);
       setStatsData(data.stats);
     } finally {
