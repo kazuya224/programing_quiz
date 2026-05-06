@@ -12,11 +12,11 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
         credentials: "include", // ← 常に Cookie を送受信
     });
 
-    if (res.status === 401) {
-        if (typeof window !== "undefined") {
-            window.location.href = "/login";
-        }
-    }
+    // if (res.status === 401) {
+    //     if (typeof window !== "undefined") {
+    //         window.location.href = "/login";
+    //     }
+    // }
 
     return res;
 };
