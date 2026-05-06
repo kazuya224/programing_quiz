@@ -52,18 +52,11 @@ export default function HomePage() {
   };
 
   const fetchStats = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
     try {
       const res = await apiFetch(`/questions/stats`, {
-        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
       if (res.status === 401) {
-        localStorage.removeItem("token");
         router.push("/login");
       }
       if (data.genres) setGenreData(data.genres);
@@ -74,9 +67,7 @@ export default function HomePage() {
   };
 
   const fetchMe = async () => {
-    const token = localStorage.getItem("token");
     const res = await apiFetch("/auth/me", {
-      headers: { Authorization: `Bearer ${token}` },
     });
     const user = await res.json();
     setUserName(user.userName || "Engineer");

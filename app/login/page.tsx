@@ -11,6 +11,16 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const googleButtonRef = useRef<HTMLDivElement>(null);
 
+  // Googleボタンのクリックを検知してローディング開始
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+const handleWrapperClick = useCallback(() => {
+    setIsLoading(true);
+    setError(null);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setIsLoading(false), 120_000);
+}, []);
+
   const handleCredentialResponse = useCallback(async (response: any) => {
     setIsLoading(true);
     setError(null);
@@ -20,14 +30,6 @@ export default function LoginPage() {
         method: "POST",
         body: JSON.stringify({ token: response.credential }),
       });
-
-      if (!res.ok) {
-        setError("ログインに失敗しました。もう一度お試しください。");
-        return;
-      }
-
-      const data = await res.json();
-      localStorage.setItem("token", data.token);
       router.push("/home");
     } catch (err) {
       console.error(err);
@@ -54,20 +56,7 @@ export default function LoginPage() {
     }
   }, [handleCredentialResponse]);
 
-  // Googleボタンのクリックを検知してローディング開始
-  const handleWrapperClick = useCallback(() => {
-    setIsLoading(true);
-    setError(null);
-
-    // ポップアップがキャンセルされた場合に備えてタイムアウトでリセット
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 120_000); // 2分
-
-    // callbackが来たらタイマーをクリアするために上書き
-    // (handleCredentialResponse側でもsetIsLoading(true)するので二重呼び出しは問題なし)
-    return () => clearTimeout(timer);
-  }, []);
+  
 
   return (
     <>

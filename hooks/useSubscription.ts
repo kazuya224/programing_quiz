@@ -45,7 +45,6 @@ export function useSubscription() {
 
     const cancel = async () => {
         await apiFetch("/subscription/cancel", { method: "POST" });
-        console.log("解約");
         await fetchSubscription();
     };
 

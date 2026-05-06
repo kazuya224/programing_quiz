@@ -33,16 +33,11 @@ export default function Header({ userName, streak }: Props) {
 
     setIsSaving(true);
     try {
-      const token = localStorage.getItem("token");
 
-const res = await apiFetch(`/auth/username`, {
-  method: "PATCH",
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-  body: JSON.stringify({ userName: trimmed }),
-});
-
+      const res = await apiFetch(`/auth/username`, {
+        method: "PATCH",
+        body: JSON.stringify({ userName: trimmed }),
+      });
       if (!res.ok) throw new Error("更新失敗");
 
       setDisplayName(trimmed);
