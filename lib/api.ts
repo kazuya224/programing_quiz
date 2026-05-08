@@ -9,7 +9,8 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
     const res = await fetch(`${API_BASE_URL}${path}`, {
         ...options,
         headers,
-        credentials: "include", // ← 常に Cookie を送受信
+        credentials: "include",
+        cache: "no-store",
     });
 
     if (res.status === 401) {
