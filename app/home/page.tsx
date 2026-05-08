@@ -67,8 +67,12 @@ export default function HomePage() {
   };
 
   const fetchMe = async () => {
+    console.log("before me");
+
     const res = await apiFetch("/auth/me", {
     });
+    console.log("after me");
+console.log(res.status);
     const user = await res.json();
     setUserName(user.userName || "Engineer");
   };
