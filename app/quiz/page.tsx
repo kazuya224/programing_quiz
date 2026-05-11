@@ -39,7 +39,9 @@ const [explanation, setExplanation] = useState<string>("");
   
       let url = "";
   
-      if (mode === "review") {
+      if(mode === "onboarding") {
+        url = `/questions?language=${language}&size=3`;
+      } else if (mode === "review") {
         url = `/questions/mistakes?language=${language}&size=${size}`;
       } else if (mode === "resume") {
         url = `/questions/resume?language=${language}&size=${size}`;
@@ -137,8 +139,17 @@ const [explanation, setExplanation] = useState<string>("");
 
   // 【機能1】次の問題へ進むロジック
   const handleNext = () => {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode") || "learning";
+    const isOnboarding = mode === "onboarding";
+
+    if(isOnboarding && qIndex >= 2) {
+      router.push("/home");
+      router.refresh();
+      return;
+    }
     // 残り5問になったら次を取得
-    if(hasMore && questions.length - qIndex <= 5) {
+    if(!isOnboarding && hasMore && questions.length - qIndex <= 5) {
       fetchQuestions(lastSeq!);
     }
 
@@ -253,7 +264,12 @@ const [explanation, setExplanation] = useState<string>("");
                 onClick={handleNext}
                 className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-extrabold transition-all shadow-lg shadow-indigo-500/20"
               >
-                {qIndex < questions.length - 1 ? "次の問題へ" : "結果を確認する"}
+                {(() => {
+                  const isOnboarding = new URLSearchParams(window.location.search).get("mode") === "onboarding";
+                  if (isOnboarding && qIndex >= 2) return "診断完了 → ホームへ";
+                  if (qIndex < questions.length - 1) return "次の問題へ";
+                  return "結果を確認する";
+                })()}
               </button>
             </div>
           )}

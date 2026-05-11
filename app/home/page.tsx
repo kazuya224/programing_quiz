@@ -11,8 +11,9 @@ import {
   StatsGrid,
   MainMenu,
   Footer,
-  GenreAccordionList
+  GenreAccordionList,
 } from "@/components/dashboard";
+import OnboardingModal from "@/components/dashboard/OnboardingModal";
 
 import { Genre, UserStats } from "@/components/dashboard/types";
 
@@ -22,6 +23,9 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [genreData, setGenreData] = useState<Record<string, Genre[]> | null>(null);
 
+  // オンボーディング — user_progress にレコードがないユーザーに表示
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   // 解約UI用 state
   const [showConfirm, setShowConfirm] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -29,9 +33,17 @@ export default function HomePage() {
 
   const router = useRouter();
   const availableLanguages = Object.keys(genreData || {});
+
+  // genreData からジャンル名をフラットな string[] に変換（重複除去）
+  const allGenreNames: string[] = genreData
+    ? Object.values(genreData)
+        .flat()
+        .map((g: Genre) => g.genre)
+        .filter((name, i, arr) => arr.indexOf(name) === i)
+    : [];
+
   const { isPremium, subscription, checkout, cancel } = useSubscription();
 
-  // 解約完了トーストを3秒後に消す
   useEffect(() => {
     if (cancelDone) {
       const timer = setTimeout(() => setCancelDone(false), 3000);
@@ -53,12 +65,8 @@ export default function HomePage() {
 
   const fetchStats = async () => {
     try {
-      const res = await apiFetch(`/questions/stats`, {
-      });
+      const res = await apiFetch(`/questions/stats`, {});
       const data = await res.json();
-      // if (res.status === 401) {
-      //   router.push("/login");
-      // }
       if (data.genres) setGenreData(data.genres);
       setStatsData(data.stats);
     } finally {
@@ -67,14 +75,15 @@ export default function HomePage() {
   };
 
   const fetchMe = async () => {
-    console.log("before me");
-
-    const res = await apiFetch("/auth/me", {
-    });
-    console.log("after me");
-console.log(res.status);
+    const res = await apiFetch("/auth/me", {});
     const user = await res.json();
     setUserName(user.userName || "Engineer");
+
+    // user_progress にレコードがなければオンボーディングを表示
+    if (!user.hasAnswered) {
+      setShowOnboarding(true);
+      console.log("Has", user.hasAnswered);
+    }
   };
 
   useEffect(() => {
@@ -145,7 +154,7 @@ console.log(res.status);
 
       <Footer />
 
-      {/* ① 確認モーダル */}
+      {/* 解約確認モーダル */}
       {showConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white text-black p-6 rounded w-80">
@@ -170,18 +179,24 @@ console.log(res.status);
         </div>
       )}
 
-      {/* ② ローディングトースト */}
       {isCancelling && (
         <div className="fixed bottom-5 right-5 bg-black text-white px-4 py-2 rounded z-50">
           解約処理中...
         </div>
       )}
 
-      {/* ③ 完了トースト */}
       {cancelDone && (
         <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded z-50">
           解約しました
         </div>
+      )}
+
+      {/* オンボーディングモーダル（未回答ユーザーのみ） */}
+      {showOnboarding && (
+        <OnboardingModal
+          availableLanguages={availableLanguages}
+          onComplete={() => setShowOnboarding(false)}
+        />
       )}
     </div>
   );
