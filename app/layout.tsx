@@ -16,7 +16,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "DevTrain",
-  description: "DevTrainは、実務レベルの知識を4択問題で効率よくアウトプットできる、エンジニア向け学習アプリです。",
+  description:
+    "DevTrainは、実務レベルの知識を4択問題で効率よくアウトプットできる、エンジニア向け学習アプリです。",
+
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      {
+        url: "/favicon-96x96.png",
+        sizes: "96x96",
+        type: "image/png",
+      },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -25,30 +41,41 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <head>
-      <meta name="google-site-verification" content="MKEF_smWrAbRGi3_yRA8pKHuZsnBMgxdywD9RCVe5YU" />
+        <meta
+          name="google-site-verification"
+          content="MKEF_smWrAbRGi3_yRA8pKHuZsnBMgxdywD9RCVe5YU"
+        />
+
         {/* Google Analytics */}
         <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=G-KHK7G2X36N`}
+          src="https://www.googletagmanager.com/gtag/js?id=G-KHK7G2X36N"
           strategy="afterInteractive"
         />
+
         <Script id="ga">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-XXXX');
+            gtag('config', 'G-KHK7G2X36N');
           `}
         </Script>
       </head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Analytics/>
+        <Analytics />
         {children}
       </body>
-      <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+      <script
+        src="https://accounts.google.com/gsi/client"
+        async
+        defer
+      ></script>
     </html>
   );
 }
